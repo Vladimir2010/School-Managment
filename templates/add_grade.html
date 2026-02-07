@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Добавяне на оценка</h2>
+
+<form method="POST">
+    <label for="student_id">Ученик:</label>
+    <select name="student_id" id="student_id" required>
+        <option value="" disabled selected>Избери ученик</option>
+        {% for student in students %}
+        <option value="{{ student['id'] }}">{{ student['name'] }} ({{ student['student_class'] }})</option>
+        {% endfor %}
+    </select>
+
+    <label for="subject">Предмет:</label>
+    <select name="subject" id="subject" required>
+        <option value="Математика">Математика</option>
+        <option value="БЕЛ">БЕЛ</option>
+        <option value="Английски език">Английски език</option>
+        <option value="Информатика">Информатика</option>
+        <option value="Физика">Физика</option>
+    </select>
+
+    <label for="grade">Оценка:</label>
+    <select name="grade" id="grade" required>
+        <option value="6">Отличен 6</option>
+        <option value="5">Много добър 5</option>
+        <option value="4">Добър 4</option>
+        <option value="3">Среден 3</option>
+        <option value="2">Слаб 2</option>
+    </select>
+
+    <button type="submit">Запиши оценката</button>
+</form>
+{% endblock %}

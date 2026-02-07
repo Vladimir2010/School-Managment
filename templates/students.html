@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Списък с Ученици</h2>
+<a href="{{ url_for('add_student') }}" class="btn">+ Добави нов ученик</a>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Име</th>
+        <th>Клас</th>
+    </tr>
+    {% for student in students %}
+    <tr>
+        <td>{{ student['id'] }}</td>
+        <td>{{ student['name'] }}</td>
+        <td>{{ student['student_class'] }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="3">Няма въведени ученици.</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Оценки</h2>
+<a href="{{ url_for('add_grade') }}" class="btn">+ Добави оценка</a>
+
+<table>
+    <tr>
+        <th>Дата</th>
+        <th>Ученик</th>
+        <th>Предмет</th>
+        <th>Оценка</th>
+    </tr>
+    {% for grade in grades %}
+    <tr>
+        <td>{{ grade['date_added'] }}</td>
+        <td>{{ grade['name'] }}</td>
+        <td>{{ grade['subject'] }}</td>
+        <td><strong>{{ grade['grade'] }}</strong></td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="4">Няма въведени оценки.</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

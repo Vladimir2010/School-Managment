@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Добавяне на ученик</h2>
+
+<form method="POST">
+    <label for="name">Име на ученика:</label>
+    <input type="text" id="name" name="name" required placeholder="Напр. Иван Петров">
+
+    <label for="class">Клас:</label>
+    <input type="text" id="class" name="class" required placeholder="Напр. 9А">
+
+    <button type="submit">Запиши</button>
+</form>
+{% endblock %}
