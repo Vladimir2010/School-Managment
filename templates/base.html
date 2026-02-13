@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - EduGrade 9</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">EduGrade 9</div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">📊
+                        Табло</a></li>
+                <li><a href="{{ url_for('students.list_students') }}"
+                        class="{{ 'active' if 'students' in request.endpoint else '' }}">👥 Ученици</a></li>
+                <li><a href="{{ url_for('grades.list_grades') }}"
+                        class="{{ 'active' if 'grades' in request.endpoint else '' }}">📝 Оценки</a></li>
+                <li><a href="{{ url_for('absences.list_absences') }}"
+                        class="{{ 'active' if 'absences' in request.endpoint else '' }}">📅 Отсъствия</a></li>
+                <li><a href="{{ url_for('reports.dashboard') }}"
+                        class="{{ 'active' if 'reports' in request.endpoint else '' }}">📈 Справки</a></li>
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('auth.logout') }}">🚪 Изход ({{ current_user.username }})</a></li>
+                {% else %}
+                <li><a href="{{ url_for('auth.login') }}"
+                        class="{{ 'active' if 'auth.login' in request.endpoint else '' }}">🔑 Вход</a></li>
+                <li><a href="{{ url_for('auth.register') }}"
+                        class="{{ 'active' if 'auth.register' in request.endpoint else '' }}">📝 Регистрация</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>{{ title or "Начало" }}</h1>
+            <div class="user-meta">
+                {% if current_user.is_authenticated %}
+                <span>Роля: <strong>{{ "Админ" if current_user.role == 'admin' else "Учител" if current_user.role ==
+                        'teacher' else "Ученик" }}</strong></span>
+                {% endif %}
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

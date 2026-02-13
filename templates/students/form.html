@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2>{{ title }}</h2>
+    <p style="color: var(--text-muted); margin-bottom: 32px;">Попълнете данните за ученика</p>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label>{{ form.first_name.label }}</label>
+            {{ form.first_name(class="form-control", placeholder="напр. Иван") }}
+            {% for error in form.first_name.errors %}
+            <span style="color: var(--danger); font-size: 12px;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label>{{ form.last_name.label }}</label>
+            {{ form.last_name(class="form-control", placeholder="напр. Иванов") }}
+            {% for error in form.last_name.errors %}
+            <span style="color: var(--danger); font-size: 12px;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label>{{ form.student_class.label }}</label>
+            {{ form.student_class(class="form-control", placeholder="напр. 9А") }}
+            {% for error in form.student_class.errors %}
+            <span style="color: var(--danger); font-size: 12px;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label>{{ form.email.label }}</label>
+            {{ form.email(class="form-control", placeholder="ivan@mail.bg") }}
+            {% for error in form.email.errors %}
+            <span style="color: var(--danger); font-size: 12px;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div style="margin-top: 32px; display: flex; gap: 12px;">
+            <button type="submit" class="btn btn-primary" style="flex: 1; height: 48px;">Запази промените</button>
+            <a href="{{ url_for('students.list_students') }}" class="btn"
+                style="background: #f1f5f9; color: var(--text-main);">Отказ</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

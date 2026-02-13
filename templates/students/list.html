@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2>Ученици</h2>
+        {% if current_user.role in ['admin', 'teacher'] %}
+        <a href="{{ url_for('students.add_student') }}" class="btn btn-success">+ Нов ученик</a>
+        {% endif %}
+    </div>
+
+    <form method="GET" style="display: flex; gap: 12px; margin-bottom: 32px;">
+        <input type="text" name="search" value="{{ search }}" placeholder="Търсене по име..."
+            style="flex: 1; max-width: 400px; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;">
+        <button type="submit" class="btn btn-primary">Търси</button>
+    </form>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Име и Фамилия</th>
+                    <th>Клас</th>
+                    <th>Имейл</th>
+                    <th>Ср. Успех</th>
+                    {% if current_user.role in ['admin', 'teacher'] %}
+                    <th style="text-align: center;">Действия</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students.items %}
+                <tr>
+                    <td><strong>{{ student.first_name }} {{ student.last_name }}</strong></td>
+                    <td>{{ student.student_class }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>
+                        <span
+                            class="badge {{ 'badge-success' if student.average_grade >= 4.5 else 'badge-danger' if student.average_grade < 3 else '' }}">
+                            {{ student.average_grade }}
+                        </span>
+                    </td>
+                    {% if current_user.role in ['admin', 'teacher'] %}
+                    <td style="text-align: center;">
+                        <div style="display: flex; gap: 8px; justify-content: center;">
+                            <a href="{{ url_for('students.edit_student', id=student.id) }}" class="btn btn-primary"
+                                style="padding: 6px 12px; font-size: 12px;">Редактирай</a>
+                            {% if current_user.role == 'admin' %}
+                            <form action="{{ url_for('students.delete_student', id=student.id) }}" method="POST"
+                                style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;"
+                                    onclick="return confirm('Наистина ли искате да изтриете този ученик?')">Изтрий</button>
+                            </form>
+                            {% endif %}
+                            <a href="{{ url_for('reports.student_report_pdf', id=student.id) }}" class="btn btn-success"
+                                style="padding: 6px 12px; font-size: 12px;">PDF</a>
+                        </div>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 24px; display: flex; justify-content: center; gap: 20px; align-items: center;">
+        {% if students.has_prev %}
+        <a href="{{ url_for('students.list_students', page=students.prev_num, search=search) }}"
+            style="color: var(--accent-color); text-decoration: none;">&laquo; Предишна</a>
+        {% endif %}
+        <span style="color: var(--text-muted);">Страница {{ students.page }} от {{ students.pages }}</span>
+        {% if students.has_next %}
+        <a href="{{ url_for('students.list_students', page=students.next_num, search=search) }}"
+            style="color: var(--accent-color); text-decoration: none;">Следваща &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

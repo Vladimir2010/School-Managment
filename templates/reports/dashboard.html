@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="margin-bottom: 32px;">
+    <h2>Анализ и Справки</h2>
+    <p style="color: var(--text-muted);">Визуализация на успеха и присъствието в реално време.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 24px;">
+    <div class="card">
+        <h3>Среден успех по ученици</h3>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Сравнителна таблица на успеха</p>
+        <canvas id="gradesChart" style="max-height: 400px;"></canvas>
+    </div>
+
+    <div class="card">
+        <h3>Отсъствия по класове</h3>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Разпределение на отсъствията</p>
+        <canvas id="absencesChart" style="max-height: 400px;"></canvas>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const gradesCtx = document.getElementById('gradesChart').getContext('2d');
+        new Chart(gradesCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for g in avg_grades %}"{{ g.first_name }} {{ g.last_name }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Среден успех',
+            data: [{% for g in avg_grades %}{{ g.average }}{% if not loop.last %}, {% endif %} {% endfor %}],
+    backgroundColor: 'rgba(99, 102, 241, 0.5)',
+        borderColor: 'rgba(99, 102, 241, 1)',
+            borderWidth: 2,
+                borderRadius: 8
+                }]
+            },
+    options: {
+        responsive: true,
+            scales: {
+            y: {
+                beginAtZero: true,
+                    max: 6,
+                        grid: { display: false }
+            },
+            x: { grid: { display: false } }
+        },
+        plugins: {
+            legend: { display: false }
+        }
+    }
+        });
+
+    const absencesCtx = document.getElementById('absencesChart').getContext('2d');
+    new Chart(absencesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for a in absences_by_class %}"Клас {{ a.student_class }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Отсъствия',
+            data: [{% for a in absences_by_class %}{{ a.count }}{% if not loop.last %}, {% endif %} {% endfor %}],
+    backgroundColor: [
+        '#6366f1',
+        '#10b981',
+        '#f59e0b',
+        '#ef4444',
+        '#8b5cf6'
+    ],
+        hoverOffset: 10,
+            borderWidth: 0
+                }]
+            },
+    options: {
+        responsive: true,
+            cutout: '70%',
+                plugins: {
+            legend: { position: 'bottom' }
+        }
+    }
+        });
+    });
+</script>
+{% endblock %}

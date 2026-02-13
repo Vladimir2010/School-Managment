@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2>{{ title }}</h2>
+    <p style="color: var(--text-muted); margin-bottom: 32px;">Въведете информация за новата оценка</p>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label>{{ form.student_id.label }}</label>
+            {{ form.student_id(class="form-control") }}
+            {% for error in form.student_id.errors %}
+            <span style="color: var(--danger); font-size: 12px;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label>{{ form.subject_id.label }}</label>
+            {{ form.subject_id(class="form-control") }}
+            {% for error in form.subject_id.errors %}
+            <span style="color: var(--danger); font-size: 12px;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label>{{ form.grade_value.label }}</label>
+            {{ form.grade_value(class="form-control", placeholder="2-6", type="number", min="2", max="6") }}
+            {% for error in form.grade_value.errors %}
+            <span style="color: var(--danger); font-size: 12px;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div style="margin-top: 32px; display: flex; gap: 12px;">
+            <button type="submit" class="btn btn-primary" style="flex: 1; height: 48px;">Запази оценка</button>
+            <a href="{{ url_for('grades.list_grades') }}" class="btn"
+                style="background: #f1f5f9; color: var(--text-main);">Отказ</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

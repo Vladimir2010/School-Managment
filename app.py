@@ -1,116 +1,70 @@
-from flask import Flask, render_template, request, redirect, url_for, session, g
-import sqlite3
-import database
+from flask import Flask, render_template, redirect, url_for
+from config import Config
+from models import db, User
+from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
+import logging
+from logging.handlers import RotatingFileHandler
+import os
 
-app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # За сесиите (login)
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
 
-# Свързване с базата данни при всяка заявка
-@app.teardown_appcontext
-def close_connection(exception):
-    database.close_connection(exception)
+    # Initialize extensions
+    db.init_app(app)
+    login = LoginManager(app)
+    login.login_view = 'auth.login'
+    csrf = CSRFProtect(app)
 
-def get_db():
-    return database.get_db()
+    @login.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
 
-# --- МАРШРУТИ (ROUTES) ---
+    # Register blueprints
+    from routes.auth import auth_bp
+    from routes.students import students_bp
+    from routes.grades import grades_bp
+    from routes.absences import absences_bp
+    from routes.reports import reports_bp
 
-@app.route('/')
-def index():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('index.html')
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(students_bp, url_prefix='/students')
+    app.register_blueprint(grades_bp, url_prefix='/grades')
+    app.register_blueprint(absences_bp, url_prefix='/absences')
+    app.register_blueprint(reports_bp, url_prefix='/reports')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        
-        # Проверка в базата данни
-        db = get_db()
-        user = db.execute(
-            'SELECT * FROM users WHERE username = ?', (username,)
-        ).fetchone()
+    @app.route('/')
+    def index():
+        return render_template('index.html', title='Начало')
 
-        if user is None:
-            error = 'Грешно потребителско име.'
-        elif user['password'] != password:
-            error = 'Грешна парола.'
-        else:
-            session.clear()
-            session['user_id'] = user['id']
-            return redirect(url_for('index'))
+    # Error handlers
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('404.html', title='Страницата не е намерена'), 404
 
-    return render_template('login.html', error=error)
+    @app.errorhandler(500)
+    def internal_error(error):
+        db.session.rollback()
+        return render_template('500.html', title='Системна грешка'), 500
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('login'))
+    # Logging setup
+    if not app.debug and not app.testing:
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        file_handler = RotatingFileHandler('logs/edugrade9.log', maxBytes=10240, backupCount=10)
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('EduGrade 9 стартира')
 
-@app.route('/students')
-def students():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-    db = get_db()
-    all_students = db.execute('SELECT * FROM students').fetchall()
-    return render_template('students.html', students=all_students)
+    return app
 
-@app.route('/add_student', methods=['GET', 'POST'])
-def add_student():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        name = request.form['name']
-        student_class = request.form['class']
-        
-        db = get_db()
-        db.execute('INSERT INTO students (name, student_class) VALUES (?, ?)',
-                   (name, student_class))
-        db.commit()
-        return redirect(url_for('students'))
-    
-    return render_template('add_student.html')
-
-@app.route('/grades')
-def grades():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-    db = get_db()
-    # Взимаме оценките + имената на учениците (JOIN)
-    query = '''
-        SELECT grades.id, students.name, grades.subject, grades.grade, grades.date_added
-        FROM grades
-        JOIN students ON grades.student_id = students.id
-        ORDER BY grades.date_added DESC
-    '''
-    all_grades = db.execute(query).fetchall()
-    return render_template('grades.html', grades=all_grades)
-
-@app.route('/add_grade', methods=['GET', 'POST'])
-def add_grade():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-
-    db = get_db()
-
-    if request.method == 'POST':
-        student_id = request.form['student_id']
-        subject = request.form['subject']
-        grade = request.form['grade']
-        
-        db.execute('INSERT INTO grades (student_id, subject, grade) VALUES (?, ?, ?)',
-                   (student_id, subject, grade))
-        db.commit()
-        return redirect(url_for('grades'))
-    
-    students = db.execute('SELECT * FROM students').fetchall()
-    return render_template('add_grade.html', students=students)
+app = create_app()
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

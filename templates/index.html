@@ -1,11 +1,39 @@
-{% extends "layout.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<h2>Добре дошли в Онлайн Училищната Система!</h2>
-<p>Използвайте менюто горе, за да управлявате ученици и оценки.</p>
+<div class="dashboard-grid">
+    <div class="card">
+        <h3>Добре дошли в EduGrade 9</h3>
+        <p style="color: var(--text-muted); margin-top: 10px;">Професионална система за управление на учебния процес.
+        </p>
+        <div style="margin-top: 24px;">
+            <a href="{{ url_for('students.list_students') }}" class="btn btn-primary">Виж учениците</a>
+        </div>
+    </div>
 
-<div style="text-align: center; margin-top: 50px;">
-    <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png" width="150" alt="School Icon">
-    <h3>Успешна учебна година!</h3>
+    <div class="card">
+        <h3>Бързи връзки</h3>
+        <ul style="list-style: none; margin-top: 16px;">
+            <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--success);">✓</span> Управление на записи
+            </li>
+            <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--success);">✓</span> Проследяване на успеха
+            </li>
+            <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--success);">✓</span> Контрол на отсъствията
+            </li>
+            <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--success);">✓</span> Генериране на PDF отчети
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 24px;">
+    <h3>Системни съобщения</h3>
+    <p style="padding: 16px; background: #f1f5f9; border-radius: 12px; margin-top: 12px; color: var(--text-muted);">
+        Няма нови системни съобщения. Всички модули работят нормално.
+    </p>
 </div>
 {% endblock %}
