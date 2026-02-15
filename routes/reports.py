@@ -33,14 +33,23 @@ def student_report_pdf(id):
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
     
-    # Standard fonts don't support Cyrillic well. 
-    # For a perfect result, we would register a .ttf font here.
-    # For now, we'll use a standard font and hope for the best, 
-    # but in a real app, we'd bundle a Cyrillic-capable font.
+    # Register fonts for Cyrillic support
+    font_path = os.path.join('static', 'fonts', 'arial.ttf')
+    font_bold_path = os.path.join('static', 'fonts', 'arialbd.ttf')
     
-    p.setFont("Helvetica-Bold", 16)
+    if os.path.exists(font_path) and os.path.exists(font_bold_path):
+        pdfmetrics.registerFont(TTFont('Arial', font_path))
+        pdfmetrics.registerFont(TTFont('Arial-Bold', font_bold_path))
+        main_font = "Arial"
+        bold_font = "Arial-Bold"
+    else:
+        # Fallback if fonts are missing
+        main_font = "Helvetica"
+        bold_font = "Helvetica-Bold"
+
+    p.setFont(bold_font, 16)
     p.drawString(100, 750, f"Служебна бележка: {student.first_name} {student.last_name}")
-    p.setFont("Helvetica", 12)
+    p.setFont(main_font, 12)
     p.drawString(100, 730, f"Клас: {student.student_class}")
     p.drawString(100, 715, f"Имейл: {student.email}")
     
