@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }} - EduGrade 9</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -17,21 +18,27 @@
                 <li><a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">📊
                         Табло</a></li>
                 <li><a href="{{ url_for('students.list_students') }}"
-                        class="{{ 'active' if 'students' in request.endpoint else '' }}">👥 Ученици</a></li>
+                        class="{{ 'active' if request.endpoint and 'students' in request.endpoint else '' }}">👥
+                        Ученици</a></li>
                 <li><a href="{{ url_for('grades.list_grades') }}"
-                        class="{{ 'active' if 'grades' in request.endpoint else '' }}">📝 Оценки</a></li>
+                        class="{{ 'active' if request.endpoint and 'grades' in request.endpoint else '' }}">📝
+                        Оценки</a></li>
                 <li><a href="{{ url_for('absences.list_absences') }}"
-                        class="{{ 'active' if 'absences' in request.endpoint else '' }}">📅 Отсъствия</a></li>
+                        class="{{ 'active' if request.endpoint and 'absences' in request.endpoint else '' }}">📅
+                        Отсъствия</a></li>
                 <li><a href="{{ url_for('reports.dashboard') }}"
-                        class="{{ 'active' if 'reports' in request.endpoint else '' }}">📈 Справки</a></li>
+                        class="{{ 'active' if request.endpoint and 'reports' in request.endpoint else '' }}">📈
+                        Справки</a></li>
                 <hr style="margin: 20px 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
                 {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('auth.logout') }}">🚪 Изход ({{ current_user.username }})</a></li>
                 {% else %}
                 <li><a href="{{ url_for('auth.login') }}"
-                        class="{{ 'active' if 'auth.login' in request.endpoint else '' }}">🔑 Вход</a></li>
+                        class="{{ 'active' if request.endpoint and 'auth.login' in request.endpoint else '' }}">🔑
+                        Вход</a></li>
                 <li><a href="{{ url_for('auth.register') }}"
-                        class="{{ 'active' if 'auth.register' in request.endpoint else '' }}">📝 Регистрация</a></li>
+                        class="{{ 'active' if request.endpoint and 'auth.register' in request.endpoint else '' }}">📝
+                        Регистрация</a></li>
                 {% endif %}
             </ul>
         </nav>
@@ -62,6 +69,13 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js');
+            });
+        }
+    </script>
 </body>
 
 </html>

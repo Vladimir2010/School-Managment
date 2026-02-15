@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+
+# Database
+*.db
+instance/
+
+# IDEs
+.idea/
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Static fonts
+# static/fonts/arial.ttf - We might want to keep fonts if they are bundled

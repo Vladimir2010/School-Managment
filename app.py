@@ -19,7 +19,7 @@ def create_app(config_class=Config):
 
     @login.user_loader
     def load_user(id):
-        return User.query.get(int(id))
+        return db.session.get(User, int(id))
 
     # Register blueprints
     from routes.auth import auth_bp
@@ -67,4 +67,4 @@ app = create_app()
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)

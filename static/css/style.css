@@ -51,6 +51,7 @@ body {
     text-align: center;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -279,4 +280,75 @@ input:focus {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 24px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 16px;
+    }
+
+    .sidebar .logo {
+        margin-bottom: 20px;
+    }
+
+    .sidebar nav ul {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        gap: 8px;
+    }
+
+    .sidebar nav ul li {
+        margin-bottom: 0;
+        flex: 0 0 auto;
+    }
+
+    .sidebar nav ul li a {
+        padding: 8px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .sidebar nav ul hr {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .flash-messages {
+        left: 24px;
+        right: 24px;
+        top: 12px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 8px;
+    }
 }
