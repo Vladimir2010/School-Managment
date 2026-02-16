@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }} - EduGrade 9</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/EduGrade9.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,7 +13,11 @@
 
 <body>
     <div class="sidebar">
-        <div class="logo">EduGrade 9</div>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='img/EduGrade9.png') }}" alt="EduGrade 9">
+            </a>
+        </div>
         <nav>
             <ul>
                 <li><a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">📊
@@ -29,6 +34,9 @@
                 <li><a href="{{ url_for('reports.dashboard') }}"
                         class="{{ 'active' if request.endpoint and 'reports' in request.endpoint else '' }}">📈
                         Справки</a></li>
+                <li><a href="{{ url_for('project') }}"
+                        class="{{ 'active' if request.endpoint == 'project' else '' }}">📁
+                        Проект</a></li>
                 <hr style="margin: 20px 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
                 {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('auth.logout') }}">🚪 Изход ({{ current_user.username }})</a></li>

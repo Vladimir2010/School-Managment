@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="project-container">
+    <section class="presentation-section">
+        <h2>Презентация по проекта</h2>
+        <div class="iframe-wrapper">
+            <iframe
+                src="https://docs.google.com/presentation/d/e/2PACX-1vS-G8CgbdYp5sRPX6xIO_C7KnkGd8P_QufqFlZTwM9x-mvmxRUb3x3ul_Qcs7HqattPIaC2JZZSlYLt/pubembed?start=false&loop=false&delayms=5000"
+                frameborder="0" width="100%" height="600" allowfullscreen="true" mozallowfullscreen="true"
+                webkitallowfullscreen="true"></iframe>
+        </div>
+    </section>
+
+    <section class="coursework-section">
+        <h2>Курсова работа</h2>
+        <p>Тук можете да прегледате и изтеглите курсовата работа по проекта.</p>
+        <div class="iframe-wrapper document-wrapper">
+            <iframe
+                src="https://docs.google.com/document/d/e/2PACX-1vSElHZiBnhO2RcWmdsz25yuAJNtQRVfxOVsmPXEsLk9oi-8rMdqtoby-WKjtZrjnK0PisVUr4ZwraA7/pub?embedded=true"
+                frameborder="0" width="100%" height="800"></iframe>
+        </div>
+        <div class="download-cards">
+            <div class="download-card">
+                <div class="icon">📊</div>
+                <h3>Презентация</h3>
+                <p>Изтеглете презентацията във формат PPTX.</p>
+                <a href="{{ url_for('static', filename='docs/presentation.pptx') }}" class="btn btn-primary"
+                    download>Изтегли PPTX</a>
+            </div>
+            <div class="download-card">
+                <div class="icon">📄</div>
+                <h3>Курсова работа</h3>
+                <p>Изтеглете курсовата работа във формат DOCX.</p>
+                <a href="{{ url_for('static', filename='docs/coursework.docx') }}" class="btn btn-primary"
+                    download>Изтегли DOCX</a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

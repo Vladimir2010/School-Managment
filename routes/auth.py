@@ -14,9 +14,10 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Влез')
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Потребителско име', validators=[DataRequired(message="Задължително поле")])
-    password = PasswordField('Парола', validators=[DataRequired(message="Задължително поле")])
+    username = StringField('Потребителско име', validators=[DataRequired(message="Задължително pole")])
+    password = PasswordField('Парола', validators=[DataRequired(message="Задължително pole")])
     role = SelectField('Роля', choices=[('student', 'Ученик'), ('teacher', 'Учител')], validators=[DataRequired()])
+    teacher_key = StringField('Ключ за учител')
     submit = SubmitField('Регистрирай се')
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -48,6 +49,14 @@ def register():
         if User.query.filter_by(username=form.username.data).first():
             flash('Потребителското име вече е заето.')
             return redirect(url_for('auth.register'))
+        
+        # Check teacher registration key
+        if form.role.data == 'teacher':
+            from flask import current_app
+            if form.teacher_key.data != current_app.config['TEACHER_REGISTRATION_KEY']:
+                flash('Невалиден ключ за учител!')
+                return redirect(url_for('auth.register'))
+                
         user = User(username=form.username.data, role=form.role.data)
         user.set_password(form.password.data)
         db.session.add(user)

@@ -25,10 +25,26 @@
         </div>
         <div class="form-group">
             <label>Роля</label>
-            {{ form.role(class="form-control") }}
+            {{ form.role(class="form-control", id="role-select") }}
+        </div>
+        <div class="form-group" id="teacher-key-group" style="display: none;">
+            <label>Ключ за учител</label>
+            {{ form.teacher_key(placeholder="Въведете предоставения ключ...", class="form-control") }}
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Изисква се само за учители</p>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; height: 48px;">Регистрирай се</button>
     </form>
+
+    <script>
+        document.getElementById('role-select').addEventListener('change', function () {
+            var keyGroup = document.getElementById('teacher-key-group');
+            if (this.value === 'teacher') {
+                keyGroup.style.display = 'block';
+            } else {
+                keyGroup.style.display = 'none';
+            }
+        });
+    </script>
 
     <div style="text-align: center; margin-top: 24px;">
         <p style="color: var(--text-muted);">Вече имате профил? <a href="{{ url_for('auth.login') }}"

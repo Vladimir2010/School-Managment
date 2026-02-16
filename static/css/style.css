@@ -45,14 +45,16 @@ body {
 }
 
 .sidebar .logo {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 40px;
-    text-align: center;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar .logo img {
+    max-width: 180px;
+    height: auto;
+    filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.2));
 }
 
 .sidebar nav ul {

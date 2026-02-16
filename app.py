@@ -38,6 +38,10 @@ def create_app(config_class=Config):
     def index():
         return render_template('index.html', title='Начало')
 
+    @app.route('/project')
+    def project():
+        return render_template('project.html', title='Проект и Курсова работа')
+
     # Error handlers
     @app.errorhandler(404)
     def not_found_error(error):
